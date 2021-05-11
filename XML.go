@@ -29,6 +29,10 @@ func XML(source string) (string, error) {
 					if runes[i-1] == '-' && runes[i-2] == '-' {
 						intMode = MODE_NORMAL
 						i++
+
+						if i >= length {
+							break
+						}
 					}
 				}
 			}

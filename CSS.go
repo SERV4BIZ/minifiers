@@ -39,6 +39,10 @@ func CSS(source string) (string, error) {
 					if runes[i-1] == '*' {
 						intMode = MODE_NORMAL
 						i++
+
+						if i >= length {
+							break
+						}
 					}
 				}
 			}

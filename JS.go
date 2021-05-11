@@ -45,6 +45,10 @@ func JS(source string) (string, error) {
 			if runes[i] == '\n' {
 				intMode = MODE_NORMAL
 				i++
+
+				if i >= length {
+					break
+				}
 			}
 		}
 		// End of Single comment
@@ -74,6 +78,10 @@ func JS(source string) (string, error) {
 					if runes[i-1] == '*' {
 						intMode = MODE_NORMAL
 						i++
+
+						if i >= length {
+							break
+						}
 					}
 				}
 			}
