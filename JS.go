@@ -8,11 +8,11 @@ func JS(source string) (string, error) {
 	result := strings.TrimSpace(source)
 
 	MODE_NORMAL := 0
-	MODE_SINGLE_COMMENT := 1
-	MODE_BLOCK_COMMENT := 2
-	MODE_SINGLE_QUOTE := 3
-	MODE_DOUBLE_QUOTE := 4
-	MODE_BACKTICKS := 5
+	MODE_SINGLE_QUOTE := 1
+	MODE_DOUBLE_QUOTE := 2
+	MODE_BACKTICKS := 3
+	MODE_SINGLE_COMMENT := 4
+	MODE_BLOCK_COMMENT := 5
 
 	intMode := MODE_NORMAL
 
@@ -22,72 +22,6 @@ func JS(source string) (string, error) {
 
 	// Compress processing
 	for i := 0; i < length; i++ {
-		// Single comment
-		if intMode == MODE_NORMAL {
-			if runes[i] == '/' {
-				if i-1 >= 0 {
-					if runes[i-1] != '\\' {
-						if i+1 < length {
-							if runes[i+1] == '/' {
-								intMode = MODE_SINGLE_COMMENT
-							}
-						}
-					}
-				} else {
-					if i+1 < length {
-						if runes[i+1] == '/' {
-							intMode = MODE_SINGLE_COMMENT
-						}
-					}
-				}
-			}
-		} else if intMode == MODE_SINGLE_COMMENT {
-			if runes[i] == '\n' {
-				intMode = MODE_NORMAL
-				i++
-
-				if i >= length {
-					break
-				}
-			}
-		}
-		// End of Single comment
-
-		// Block comment
-		if intMode == MODE_NORMAL {
-			if runes[i] == '/' {
-				if i-1 >= 0 {
-					if runes[i-1] != '\\' {
-						if i+1 < length {
-							if runes[i+1] == '*' {
-								intMode = MODE_BLOCK_COMMENT
-							}
-						}
-					}
-				} else {
-					if i+1 < length {
-						if runes[i+1] == '*' {
-							intMode = MODE_BLOCK_COMMENT
-						}
-					}
-				}
-			}
-		} else if intMode == MODE_BLOCK_COMMENT {
-			if runes[i] == '/' {
-				if i-1 >= 0 {
-					if runes[i-1] == '*' {
-						intMode = MODE_NORMAL
-						i++
-
-						if i >= length {
-							break
-						}
-					}
-				}
-			}
-		}
-		// End of block comment
-
 		// String single quote
 		if intMode == MODE_NORMAL {
 			if runes[i] == '\'' {
@@ -153,6 +87,72 @@ func JS(source string) (string, error) {
 			}
 		}
 		// End of backticks
+
+		// Single comment
+		if intMode == MODE_NORMAL {
+			if runes[i] == '/' {
+				if i-1 >= 0 {
+					if runes[i-1] != '\\' {
+						if i+1 < length {
+							if runes[i+1] == '/' {
+								intMode = MODE_SINGLE_COMMENT
+							}
+						}
+					}
+				} else {
+					if i+1 < length {
+						if runes[i+1] == '/' {
+							intMode = MODE_SINGLE_COMMENT
+						}
+					}
+				}
+			}
+		} else if intMode == MODE_SINGLE_COMMENT {
+			if runes[i] == '\n' {
+				intMode = MODE_NORMAL
+				i++
+
+				if i >= length {
+					break
+				}
+			}
+		}
+		// End of Single comment
+
+		// Block comment
+		if intMode == MODE_NORMAL {
+			if runes[i] == '/' {
+				if i-1 >= 0 {
+					if runes[i-1] != '\\' {
+						if i+1 < length {
+							if runes[i+1] == '*' {
+								intMode = MODE_BLOCK_COMMENT
+							}
+						}
+					}
+				} else {
+					if i+1 < length {
+						if runes[i+1] == '*' {
+							intMode = MODE_BLOCK_COMMENT
+						}
+					}
+				}
+			}
+		} else if intMode == MODE_BLOCK_COMMENT {
+			if runes[i] == '/' {
+				if i-1 >= 0 {
+					if runes[i-1] == '*' {
+						intMode = MODE_NORMAL
+						i++
+
+						if i >= length {
+							break
+						}
+					}
+				}
+			}
+		}
+		// End of block comment
 
 		if intMode != MODE_SINGLE_COMMENT && intMode != MODE_BLOCK_COMMENT {
 			if i < length {

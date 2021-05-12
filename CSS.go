@@ -6,7 +6,9 @@ func CSS(source string) (string, error) {
 	result := strings.TrimSpace(source)
 
 	MODE_NORMAL := 0
-	MODE_BLOCK_COMMENT := 1
+	MODE_SINGLE_QUOTE := 1
+	MODE_DOUBLE_QUOTE := 2
+	MODE_BLOCK_COMMENT := 3
 
 	intMode := MODE_NORMAL
 
@@ -14,6 +16,50 @@ func CSS(source string) (string, error) {
 	runes := []rune(result)
 	length := len(runes)
 	for i := 0; i < length; i++ {
+		// String single quote
+		if intMode == MODE_NORMAL {
+			if runes[i] == '\'' {
+				if i-1 >= 0 {
+					if runes[i-1] != '\\' {
+						intMode = MODE_SINGLE_QUOTE
+					}
+				} else {
+					intMode = MODE_SINGLE_QUOTE
+				}
+			}
+		} else if intMode == MODE_SINGLE_QUOTE {
+			if runes[i] == '\'' {
+				if i-1 >= 0 {
+					if runes[i-1] != '\\' {
+						intMode = MODE_NORMAL
+					}
+				}
+			}
+		}
+		// End of single quote
+
+		// String double quote
+		if intMode == MODE_NORMAL {
+			if runes[i] == '"' {
+				if i-1 >= 0 {
+					if runes[i-1] != '\\' {
+						intMode = MODE_DOUBLE_QUOTE
+					}
+				} else {
+					intMode = MODE_DOUBLE_QUOTE
+				}
+			}
+		} else if intMode == MODE_DOUBLE_QUOTE {
+			if runes[i] == '"' {
+				if i-1 >= 0 {
+					if runes[i-1] != '\\' {
+						intMode = MODE_NORMAL
+					}
+				}
+			}
+		}
+		// End of double quote
+
 		// Block comment
 		if intMode == MODE_NORMAL {
 			if runes[i] == '/' {
