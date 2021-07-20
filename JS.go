@@ -13,6 +13,7 @@ func JS(source string) (string, error) {
 	MODE_BACKTICKS := 3
 	MODE_SINGLE_COMMENT := 4
 	MODE_BLOCK_COMMENT := 5
+	//MODE_REGEXP := 6
 
 	intMode := MODE_NORMAL
 
@@ -23,6 +24,30 @@ func JS(source string) (string, error) {
 	// Compress processing
 	for i := 0; i < length; i++ {
 		blnNext := false
+
+		// RegExp Scope
+		/*if intMode == MODE_NORMAL {
+			if runes[i] == '/' {
+				if i-1 >= 0 {
+					if runes[i-1] != '\\' && runes[i-1] != '/' && runes[i+1] != '/' {
+						intMode = MODE_REGEXP
+					}
+				} else {
+					if runes[i+1] != '/' {
+						intMode = MODE_REGEXP
+					}
+				}
+			}
+		} else if intMode == MODE_REGEXP {
+			if runes[i] == '/' {
+				if i-1 >= 0 {
+					if runes[i-1] != '\\' && runes[i-1] != '/' && runes[i+1] != '/' {
+						intMode = MODE_NORMAL
+					}
+				}
+			}
+		}
+		// End of ReqExp Scope*/
 
 		// String single quote
 		if intMode == MODE_NORMAL {
