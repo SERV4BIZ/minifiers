@@ -16,6 +16,8 @@ func CSS(source string) (string, error) {
 	runes := []rune(result)
 	length := len(runes)
 	for i := 0; i < length; i++ {
+		blnNext := false
+
 		// String single quote
 		if intMode == MODE_NORMAL {
 			if runes[i] == '\'' {
@@ -84,11 +86,7 @@ func CSS(source string) (string, error) {
 				if i-1 >= 0 {
 					if runes[i-1] == '*' {
 						intMode = MODE_NORMAL
-						i++
-
-						if i >= length {
-							break
-						}
+						blnNext = true
 					}
 				}
 			}
@@ -97,7 +95,9 @@ func CSS(source string) (string, error) {
 
 		if intMode != MODE_BLOCK_COMMENT {
 			if i < length {
-				builder.WriteRune(runes[i])
+				if !blnNext {
+					builder.WriteRune(runes[i])
+				}
 			}
 		}
 	}

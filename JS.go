@@ -22,6 +22,8 @@ func JS(source string) (string, error) {
 
 	// Compress processing
 	for i := 0; i < length; i++ {
+		blnNext := false
+
 		// String single quote
 		if intMode == MODE_NORMAL {
 			if runes[i] == '\'' {
@@ -110,11 +112,7 @@ func JS(source string) (string, error) {
 		} else if intMode == MODE_SINGLE_COMMENT {
 			if runes[i] == '\n' {
 				intMode = MODE_NORMAL
-				i++
-
-				if i >= length {
-					break
-				}
+				blnNext = true
 			}
 		}
 		// End of Single comment
@@ -143,11 +141,7 @@ func JS(source string) (string, error) {
 				if i-1 >= 0 {
 					if runes[i-1] == '*' {
 						intMode = MODE_NORMAL
-						i++
-
-						if i >= length {
-							break
-						}
+						blnNext = true
 					}
 				}
 			}
@@ -156,7 +150,9 @@ func JS(source string) (string, error) {
 
 		if intMode != MODE_SINGLE_COMMENT && intMode != MODE_BLOCK_COMMENT {
 			if i < length {
-				builder.WriteRune(runes[i])
+				if !blnNext {
+					builder.WriteRune(runes[i])
+				}
 			}
 		}
 	}
